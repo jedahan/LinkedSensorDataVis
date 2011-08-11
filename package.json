@@ -1,0 +1,15 @@
+{
+  "name": "LinkedSensorDataVis",
+  "version": "0.0.1",
+  "description": "Sample visualisation for temperature data",
+
+  "dependencies":{
+    "express": "",
+    "request": "",
+    "jade": "",
+    "docco": "",
+    "supervisor": "",
+    "coffee-script": ""
+  }
+
+}
