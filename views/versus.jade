@@ -1,0 +1,49 @@
+!!! 5
+html
+  head
+    title visualization
+
+    link(rel='stylesheet', type="text/css", media="screen, projection", href='/screen.css' )
+
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js')
+
+  body
+    h1 visualization
+    #dashboard
+      #graph
+      #sidebar
+        ul#datastreams
+    #actions
+
+    :coffeescript
+      window.initialize = ->
+        request.get "/database/environment", (err, res, body) ->
+          if not error?
+            window.environment = JSON.parse body
+            renderStreams environment.datastreams[0].id, environment.datastreams[1].id
+
+        renderStreams = (datastream1, datastream2) ->
+          request.get "/database/datastreams/#{datastream1}", (err, res, body) ->
+            if not error?
+              window.stream1 = JSON.parse body
+              graph()
+          request.get "/database/datastreams/#{datastream2}", (err, res, body) ->
+            if not error?
+              window.stream2 = JSON.parse body
+              graph()
+
+        graph = ->
+          if stream1? and stream2?
+            console.log "stream1: #{stream1}"
+            console.log "stream2: #{stream2}"
+            setInterval
+              request.get "/database/datastreams/datastream1/datapoints", (err, res, body) ->
+                updateData "datastream1", JSON.parse body
+              request.get "/database/datastreams/datastream2/datapoints", (err, res, body) ->
+                updateData "datastream2", JSON.parse body
+
+        updateResource = (streamname, datapoint) ->
+          console.log "updating #{streamname} with #{JSON.stringify datapoint}"
+
+    script
+      window.initialize()
